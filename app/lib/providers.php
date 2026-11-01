@@ -45,8 +45,23 @@ final class TranscriptionProvider
         return ['text'=>$text,'segments'=>is_array($segments)?$segments:[],'raw'=>$r,'provider'=>$provider,'model'=>$model];
     }
 
+    private static function localUrl(string $mediaUrl,string $language):array
+    {
+        if(!function_exists('proc_open'))throw new RuntimeException('PHP proc_open is disabled; use a compatible URL transcription API instead.');
+        $python=(string)config('PYTHON_BIN','python3');$script=BASE_PATH.'/workers/url_transcribe.py';
+        if(!is_file($script))throw new RuntimeException('Local URL transcription worker is missing.');
+        $proc=proc_open([$python,$script],[0=>['pipe','r'],1=>['pipe','w'],2=>['pipe','w']],$pipes,BASE_PATH);
+        if(!is_resource($proc))throw new RuntimeException('Could not start the Python URL transcription worker.');
+        fwrite($pipes[0],json_encode(['url'=>$mediaUrl,'language'=>$language],JSON_UNESCAPED_SLASHES));fclose($pipes[0]);
+        $stdout=stream_get_contents($pipes[1]);fclose($pipes[1]);$stderr=stream_get_contents($pipes[2]);fclose($pipes[2]);$code=proc_close($proc);
+        $result=json_decode((string)$stdout,true);
+        if($code!==0||!is_array($result))throw new RuntimeException('Local URL transcription failed: '.substr(trim((string)$stderr)?:'worker returned invalid output',0,500));
+        return $result;
+    }
+
     public static function url(string $mediaUrl,string $platform,string $language):array
     {
+        if(strtolower((string)config('URL_TRANSCRIPT_PROVIDER','compatible_api'))==='local_ytdlp')return self::localUrl($mediaUrl,$language);
         $base=rtrim((string)config('TRANSCRIPT_API_URL',''),' /');
         $token=(string)config('TRANSCRIPT_API_TOKEN','');
         if(!$base)throw new RuntimeException('Configure TRANSCRIPT_API_URL for public video and podcast URL transcription.');
