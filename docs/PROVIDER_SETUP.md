@@ -28,6 +28,9 @@ Supported platform path values: youtube, tiktok, instagram, facebook, linkedin, 
 
 For a temporary compatible backend, an account with TranscriptMagic API access can use TRANSCRIPT_API_URL=https://api.transcriptmagic.com and its own API token in TRANSCRIPT_API_TOKEN. This is an optional external dependency, not a built-in scraping engine; the URL provider remains replaceable.
 
+### Optional self-hosted URL extraction
+To avoid a URL-transcription vendor, set URL_TRANSCRIPT_PROVIDER=local_ytdlp and configure GROQ_API_KEY. Install Python 3, FFmpeg, and the dependencies from workers/requirements.txt in a private virtual environment. Set PYTHON_BIN to that environment's Python executable and optionally FFMPEG_LOCATION to the FFmpeg binary or directory. PHP must allow proc_open. The worker uses yt-dlp to extract publicly accessible audio, converts it to MP3, and sends it to Groq. It does not use cookies or attempt to bypass private content, DRM, login challenges, or other access controls. Some platforms may block automated extraction or change their delivery methods; failures should fall back to the compatible URL API. Verify BigRock's Python, FFmpeg and proc_open availability before enabling this mode.
+
 The response should include text or transcript. Optional segments should contain start, end and text. TRANSCRIPT_API_URL is intentionally independent from the uploaded-file ASR provider. You can use a compatible URL extraction service initially, then replace it with a different service or your own extraction workers later. This repository does not bypass DRM, login walls, private media restrictions or platform access controls.
 
 ## Cost recording
