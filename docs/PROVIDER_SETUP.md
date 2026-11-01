@@ -26,6 +26,8 @@ JSON body: {"url":"https://...","language":"auto"}
 Optional header: Authorization: Bearer {TRANSCRIPT_API_TOKEN}
 Supported platform path values: youtube, tiktok, instagram, facebook, linkedin, twitter, twitch, rumble, kick, podcast.
 
+For a temporary compatible backend, an account with TranscriptMagic API access can use TRANSCRIPT_API_URL=https://api.transcriptmagic.com and its own API token in TRANSCRIPT_API_TOKEN. This is an optional external dependency, not a built-in scraping engine; the URL provider remains replaceable.
+
 The response should include text or transcript. Optional segments should contain start, end and text. TRANSCRIPT_API_URL is intentionally independent from the uploaded-file ASR provider. You can use a compatible URL extraction service initially, then replace it with a different service or your own extraction workers later. This repository does not bypass DRM, login walls, private media restrictions or platform access controls.
 
 ## Cost recording
