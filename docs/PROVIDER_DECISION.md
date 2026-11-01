@@ -3,7 +3,7 @@
 | Workload | Recommended default | Why |
 |---|---|---|
 | Uploaded media transcription | Groq whisper-large-v3-turbo | Multilingual Whisper model; low published per-hour rate |
-| Accuracy fallback | Groq whisper-large-v3 or OpenAI gpt-4o-mini-transcribe | Allows a provider/model switch without application changes |
+| Accuracy fallback | Groq whisper-large-v3; OpenAI gpt-transcribe as an alternate text-only provider | Allows a provider/model switch without application changes; OpenAI's current model does not return timestamped segments |
 | AI summaries and repurposing | Groq chat completions | Reuses the Groq key and OpenAI-compatible API shape |
 | Public video/podcast URL extraction | Configurable URL transcription API | Extraction is a separate problem from speech-to-text; keep it swappable |
 
