@@ -25,7 +25,7 @@ final class TranscriptionProvider
         $provider=strtolower((string)config('UPLOAD_ASR_PROVIDER','groq'));
         if($provider==='groq'){
             $key=(string)config('GROQ_API_KEY','');$url=(string)config('GROQ_ASR_URL','https://api.groq.com/openai/v1/audio/transcriptions');
-            $model=(string)config('GROQ_ASR_MODEL','whisper-large-v3-turbo');$max=(int)config('ASR_MAX_FILE_MB',100);
+            $model=(string)config('GROQ_ASR_MODEL','whisper-large-v3-turbo');$max=(int)config('ASR_MAX_FILE_MB',25);
         }elseif($provider==='openai'){
             $key=(string)config('OPENAI_API_KEY','');$url=(string)config('OPENAI_ASR_URL','https://api.openai.com/v1/audio/transcriptions');
             $model=(string)config('OPENAI_ASR_MODEL','gpt-4o-mini-transcribe');$max=(int)config('ASR_MAX_FILE_MB',100);
