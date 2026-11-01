@@ -4,7 +4,7 @@
 3. Import database/001_schema.sql in phpMyAdmin, then database/003_procedures.sql. Import only into that new database.
 4. Copy .env.example to .env and configure APP_URL and DB credentials. Keep .env private.
 5. Enable PHP 8.3 with PDO MySQL, cURL, Fileinfo and mbstring. Set PHP upload_max_filesize and post_max_size.
-6. Configure transcription and AI providers in .env (see PROVIDER_SETUP.md).
+6. Configure transcription and AI providers in .env (see PROVIDER_SETUP.md). For the recommended setup, create a Groq API key and set GROQ_API_KEY; URL transcription still requires a separate compatible URL provider.
 7. Register your account, edit the email in database/002_make_admin.sql and run it to grant superadmin.
 8. Add a cPanel cron job every minute: php /home/CPANEL_USER/public_html/APP_DIR/worker/process_jobs.php 5. Replace the path/PHP binary with BigRock's values.
 9. Test an upload, URL job and TXT/SRT/VTT/JSON export.
