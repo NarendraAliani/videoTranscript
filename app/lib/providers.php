@@ -28,14 +28,14 @@ final class TranscriptionProvider
             $model=(string)config('GROQ_ASR_MODEL','whisper-large-v3-turbo');$max=(int)config('ASR_MAX_FILE_MB',25);
         }elseif($provider==='openai'){
             $key=(string)config('OPENAI_API_KEY','');$url=(string)config('OPENAI_ASR_URL','https://api.openai.com/v1/audio/transcriptions');
-            $model=(string)config('OPENAI_ASR_MODEL','gpt-4o-mini-transcribe');$max=(int)config('ASR_MAX_FILE_MB',100);
+            $model=(string)config('OPENAI_ASR_MODEL','whisper-1');$max=(int)config('ASR_MAX_FILE_MB',100);
         }elseif($provider==='custom'){
             $key=(string)config('ASR_API_KEY','');$url=(string)config('ASR_API_URL','');$model=(string)config('ASR_MODEL','whisper-1');$max=(int)config('ASR_MAX_FILE_MB',100);
         }else throw new RuntimeException('Unsupported UPLOAD_ASR_PROVIDER. Choose groq, openai or custom.');
         if(!$key||!$url)throw new RuntimeException('Configure the API key and endpoint for '.$provider.' in .env.');
         if(!is_file($absoluteFile))throw new RuntimeException('Uploaded media file is missing from storage.');
         if(filesize($absoluteFile)>$max*1048576)throw new RuntimeException('This provider accepts files up to '.$max.' MB. Reduce the media size or configure a provider with a larger limit.');
-        $format=$provider==='openai'?'json':'verbose_json';
+        $format=($provider==='openai'&&str_starts_with($model,'gpt-4o'))?'json':'verbose_json';
         $post=['model'=>$model,'file'=>new CURLFile($absoluteFile),'response_format'=>$format,'temperature'=>'0'];
         if($language!=='auto')$post['language']=$language;
         $r=self::request($url,['Authorization: Bearer '.$key],$post,900);
