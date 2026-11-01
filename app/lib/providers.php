@@ -35,7 +35,8 @@ final class TranscriptionProvider
         if(!$key||!$url)throw new RuntimeException('Configure the API key and endpoint for '.$provider.' in .env.');
         if(!is_file($absoluteFile))throw new RuntimeException('Uploaded media file is missing from storage.');
         if(filesize($absoluteFile)>$max*1048576)throw new RuntimeException('This provider accepts files up to '.$max.' MB. Reduce the media size or configure a provider with a larger limit.');
-        $post=['model'=>$model,'file'=>new CURLFile($absoluteFile),'response_format'=>'verbose_json','temperature'=>'0'];
+        $format=$provider==='openai'?'json':'verbose_json';
+        $post=['model'=>$model,'file'=>new CURLFile($absoluteFile),'response_format'=>$format,'temperature'=>'0'];
         if($language!=='auto')$post['language']=$language;
         $r=self::request($url,['Authorization: Bearer '.$key],$post,900);
         $text=(string)($r['text']??'');$segments=$r['segments']??[];
