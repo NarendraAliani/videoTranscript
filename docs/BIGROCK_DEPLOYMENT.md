@@ -1,7 +1,7 @@
 # BigRock deployment
 1. Upload this repository to a NEW application directory; do not overwrite existing websites.
 2. Create a NEW MySQL database and user in cPanel, then grant all privileges.
-3. Import database/001_schema.sql in phpMyAdmin. Import only into that new database.
+3. Import database/001_schema.sql in phpMyAdmin, then database/003_procedures.sql. Import only into that new database.
 4. Copy .env.example to .env and configure APP_URL and DB credentials. Keep .env private.
 5. Enable PHP 8.3 with PDO MySQL, cURL, Fileinfo and mbstring. Set PHP upload_max_filesize and post_max_size.
 6. Configure transcription and AI providers in .env (see PROVIDER_SETUP.md).
