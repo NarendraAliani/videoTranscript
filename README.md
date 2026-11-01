@@ -12,6 +12,7 @@ PHP 8.3, MySQL 8, Bootstrap 5.3, Google Fonts, Font Awesome, PDO and cURL. No Re
 - AI summaries, chapters, translation and content repurposing through a configurable LLM.
 - Searchable transcript history, usage ledger, provider status and JWT-protected REST API v1.
 - Swappable Groq, OpenAI and custom speech-to-text adapters with estimated provider cost tracking.
+- Optional self-hosted yt-dlp/FFmpeg URL extraction worker for publicly accessible media.
 
 ## Setup
 Import database/001_schema.sql into a NEW dedicated database. Copy .env.example to .env and enter database/provider details. Register your account, then use database/002_make_admin.sql to grant superadmin. Configure cPanel cron to run worker/process_jobs.php. Follow docs/BIGROCK_DEPLOYMENT.md.
