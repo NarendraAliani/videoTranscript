@@ -29,8 +29,16 @@ static function process(array $j):void
     }catch(Throwable $e){
         if($d->inTransaction())$d->rollBack();
         app_log('Job '.$j['id'].': '.$e->getMessage());
-        $d->prepare("UPDATE jobs SET status='failed',error_message=?,finished_at=NOW(),updated_at=NOW() WHERE id=?")->execute([substr($e->getMessage(),0,1500),$j['id']]);
-        $d->prepare("UPDATE transcripts SET status='failed',error_message=?,provider_name=?,provider_model=?,updated_at=NOW() WHERE id=?")->execute([substr($e->getMessage(),0,1500),$provider,$model,$j['transcript_id']]);
+        $message=substr($e->getMessage(),0,1500);
+        $attempt=(int)($j['attempts']??0)+1;
+        $retryable=(bool)preg_match('/HTTP (429|5[0-9]{2})|connection failed|timed out|temporarily unavailable/i',$message);
+        if($retryable&&$attempt<3){
+            $d->prepare("UPDATE jobs SET status='queued',available_at=DATE_ADD(NOW(),INTERVAL 60 SECOND),error_message=?,updated_at=NOW() WHERE id=?")->execute([$message,$j['id']]);
+            $d->prepare("UPDATE transcripts SET status='queued',error_message=?,provider_name=?,provider_model=?,updated_at=NOW() WHERE id=?")->execute([$message,$provider,$model,$j['transcript_id']]);
+        }else{
+            $d->prepare("UPDATE jobs SET status='failed',error_message=?,finished_at=NOW(),updated_at=NOW() WHERE id=?")->execute([$message,$j['id']]);
+            $d->prepare("UPDATE transcripts SET status='failed',error_message=?,provider_name=?,provider_model=?,updated_at=NOW() WHERE id=?")->execute([$message,$provider,$model,$j['transcript_id']]);
+        }
         $d->prepare("INSERT INTO provider_runs(transcript_id,provider_name,model_name,processing_ms,status,error_message,created_at) VALUES(?,?,?,?, 'failed',?,NOW())")->execute([$j['transcript_id'],$provider??'unresolved',$model,(int)((microtime(true)-$started)*1000),substr($e->getMessage(),0,1500)]);
     }
 }
