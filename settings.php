@@ -4,7 +4,7 @@ $s=db()->prepare("SELECT COUNT(*) runs,COALESCE(SUM(cost_usd),0) estimated_cost,
 $s=db()->prepare("SELECT provider_name,model_name,COUNT(*) runs,COALESCE(SUM(cost_usd),0) estimated_cost FROM provider_runs pr JOIN transcripts t ON t.id=pr.transcript_id WHERE t.user_id=? AND pr.status='completed' GROUP BY provider_name,model_name ORDER BY runs DESC");$s->execute([Auth::id()]);$providers=$s->fetchAll();
 $uploadProvider=strtolower((string)config('UPLOAD_ASR_PROVIDER','groq'));$uploadReady=$uploadProvider==='groq'?!!config('GROQ_API_KEY'):($uploadProvider==='openai'?!!config('OPENAI_API_KEY'):!!config('ASR_API_KEY'));
 $aiProvider=strtolower((string)config('AI_PROVIDER','groq'));$aiReady=$aiProvider==='groq'?!!config('GROQ_API_KEY'):(!!config('LLM_API_KEY')&&!!config('LLM_API_URL'));
-$urlReady=(bool)config('TRANSCRIPT_API_URL');
+$urlProvider=strtolower((string)config('URL_TRANSCRIPT_PROVIDER','compatible_api'));$urlReady=$urlProvider==='local_ytdlp'?(!!config('GROQ_API_KEY')&&function_exists('proc_open')):(bool)config('TRANSCRIPT_API_URL');
 require __DIR__.'/app/views/header.php';?>
 <main class="app-shell"><div class="container"><h1 class="h2 fw-bold">Settings</h1><div class="row g-4">
 <div class="col-lg-6"><section class="panel-card"><h2 class="h5">Account</h2><p class="mb-1"><?=e(Auth::user()['name'])?></p><p class="text-secondary"><?=e(Auth::user()['email'])?></p><small>Role: <?=e(Auth::user()['role'])?></small></section></div>
