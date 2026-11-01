@@ -1,0 +1,2 @@
+<?php
+require dirname(__DIR__,2).'/app/bootstrap.php';Auth::requireLogin();$id=(int)($_GET['id']??0);$s=db()->prepare('SELECT id,status,error_message,completed_at FROM transcripts WHERE id=? AND user_id=?');$s->execute([$id,Auth::id()]);$r=$s->fetch();if(!$r){http_response_code(404);header('Content-Type: application/json');echo json_encode(['error'=>'Not found']);exit;}header('Content-Type: application/json');echo json_encode($r);
