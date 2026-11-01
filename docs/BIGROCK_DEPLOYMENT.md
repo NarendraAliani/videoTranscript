@@ -8,4 +8,4 @@
 7. Register your account, edit the email in database/002_make_admin.sql and run it to grant superadmin.
 8. Add a cPanel cron job every minute: php /home/CPANEL_USER/public_html/APP_DIR/worker/process_jobs.php 5. Replace the path/PHP binary with BigRock's values.
 9. Run php tests/smoke_check.php and php tests/run.php, then test a small audio upload and TXT/SRT/VTT/JSON exports.
-This repository does not deploy to BigRock or create the live database. The SQL is provided for manual import as requested. If PHP CLI/cron is unavailable, queued jobs will not execute. Prefer storing uploads outside public_html. Never commit API keys.
+This repository does not deploy to BigRock or create the live database. The SQL is provided for manual import as requested. If PHP CLI/cron is unavailable, queued jobs will not execute. For stronger isolation, set UPLOAD_DIR to an absolute private directory outside public_html (for example, /home/CPANEL_USER/private/videoTranscript-uploads); the application resolves absolute upload paths. If you keep the default storage/uploads path, the included storage/.htaccess denies direct web access. Never commit API keys.
