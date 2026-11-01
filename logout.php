@@ -1,0 +1,1 @@
+<?php require __DIR__.'/app/bootstrap.php';if($_SERVER['REQUEST_METHOD']!=='POST')redirect('dashboard.php');verify_csrf();Auth::logout();redirect('index.php');
