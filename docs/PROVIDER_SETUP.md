@@ -11,7 +11,7 @@ Create a Groq API key and set:
 - GROQ_ASR_URL=https://api.groq.com/openai/v1/audio/transcriptions
 - GROQ_ASR_MODEL=whisper-large-v3-turbo
 
-The recommended model is multilingual and is currently listed at $0.04 per audio hour. The provider adapter requests verbose JSON to preserve segment timestamps. Provider file limits and rate limits depend on your account; this project defaults to a 100 MB maximum. See the official Groq speech-to-text docs: https://console.groq.com/docs/speech-to-text
+The recommended model is multilingual and is currently listed at $0.04 per audio hour. The provider adapter requests verbose JSON to preserve segment timestamps. Provider file limits and rate limits depend on your account; this project defaults to a 25 MB maximum to accommodate free-tier account limits; raise both UPLOAD_MAX_MB and ASR_MAX_FILE_MB to 100 only after confirming your provider account supports it. See the official Groq speech-to-text docs: https://console.groq.com/docs/speech-to-text
 
 ### 2. Uploaded-file fallback: OpenAI
 To switch, set UPLOAD_ASR_PROVIDER=openai, OPENAI_API_KEY, and optionally OPENAI_ASR_MODEL=gpt-4o-mini-transcribe. The default endpoint is https://api.openai.com/v1/audio/transcriptions. Pricing is usage-based and must be checked before launch.
