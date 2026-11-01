@@ -17,7 +17,7 @@ static function process(array $j):void
         $audioSeconds=isset($result['raw']['duration'])?(int)ceil((float)$result['raw']['duration']):null;
         if($audioSeconds===null&&is_array($segments)&&$segments){$last=end($segments);if(is_array($last))$audioSeconds=(int)ceil((float)($last['end']??$last['end_time']??0));}
         if($provider==='groq'&&$audioSeconds!==null)$cost=round(($audioSeconds/3600)*0.04,8);
-        elseif($provider==='openai'&&$audioSeconds!==null)$cost=round(($audioSeconds/60)*(str_starts_with($model,'gpt-4o-mini')?0.003:0.006),8);
+        elseif($provider==='openai'&&$audioSeconds!==null)$cost=round(($audioSeconds/60)*($model==='gpt-transcribe'?0.0045:(str_starts_with($model,'gpt-4o-mini')?0.003:0.006)),8);
         $d->beginTransaction();
         $d->prepare("UPDATE transcripts SET transcript_text=?,provider_payload=?,provider_name=?,provider_model=?,duration_seconds=COALESCE(?,duration_seconds),status='completed',completed_at=NOW(),updated_at=NOW() WHERE id=?")->execute([$text,json_encode($result['raw']??[]),$provider,$model,$audioSeconds,$j['transcript_id']]);
         $d->prepare('DELETE FROM transcript_segments WHERE transcript_id=?')->execute([$j['transcript_id']]);
